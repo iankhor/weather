@@ -61,33 +61,36 @@ export default function App() {
         </small>
       </div>
       {(searchStationLoading || searchWeatherLoading) && <Loader />}
-      {searchStationData?.length > 0 && (
-        <ul
-          className="list pl0 ml0 center mw5 ba b--light-silver br3"
-          aria-label="Stations"
-        >
-          {searchStationData.map((station, index) => (
-            <li
-              key={index}
-              className="ph3 pv2 bb b--light-silver"
-              aria-label={station}
-              data-value={station}
-              onClick={searchWeatherForStation}
-            >
-              {station}
-            </li>
-          ))}
-        </ul>
-      )}
+      {searchStationData?.length > 0 &&
+        Object.keys(searchWeatherData).length === 0 && (
+          <ul
+            className="list pl0 ml0 center mw5 ba b--light-silver br3"
+            aria-label="Stations"
+          >
+            {searchStationData.map((station, index) => (
+              <li
+                key={index}
+                className="ph3 pv2 bb b--light-silver"
+                aria-label={station}
+                data-value={station}
+                onClick={searchWeatherForStation}
+              >
+                {station}
+              </li>
+            ))}
+          </ul>
+        )}
       {searchStationError.length > 0 && <div>{searchStationError}</div>}
       {searchWeatherError.length > 0 && <div>{searchWeatherError}</div>}
-      <dl role="none" className="lh-title pa4 mt0" aria-label="weather info">
-        <dt className="f6 b">{searchWeatherData.cityName}</dt>
-        <dt className="f6 b">{searchWeatherData.geoLocation.lat}</dt>
-        <dt className="f6 b">{searchWeatherData.geoLocation.lng}</dt>
-        <dt className="f6 b">{searchWeatherData.aqi}</dt>
-        <dt className="f6 b">{searchWeatherData.url}</dt>
-      </dl>
+      {Object.keys(searchWeatherData).length > 0 && (
+        <dl role="none" className="lh-title pa4 mt0" aria-label="weather info">
+          <dt className="f6 b">{searchWeatherData.cityName}</dt>
+          <dt className="f6 b">{searchWeatherData.geoLocation.lat}</dt>
+          <dt className="f6 b">{searchWeatherData.geoLocation.lng}</dt>
+          <dt className="f6 b">{searchWeatherData.aqi}</dt>
+          <dt className="f6 b">{searchWeatherData.url}</dt>
+        </dl>
+      )}
     </>
   )
 }

@@ -24,7 +24,7 @@ function buildUseSearchWeather(mocks) {
   return {
     loading: false,
     success: null,
-    data: buildCityWeatherData(),
+    data: {},
     searchWeather: jest.fn(),
     error: '',
     ...mocks,
@@ -197,19 +197,19 @@ describe('<App/>', () => {
       })
 
       describe('fetching weather data succeeded', () => {
+        const weatherData = buildCityWeatherData({
+          cityName: 'Sydney',
+          geoLocation: {
+            lat: '99',
+            lng: '88',
+          },
+          aqi: '123',
+          url: 'www.url',
+        })
+
         it('show weather data', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             data: ['Melbourne CBD', 'Alphington'],
-          })
-
-          const weatherData = buildCityWeatherData({
-            cityName: 'Sydney',
-            geoLocation: {
-              lat: '99',
-              lng: '88',
-            },
-            aqi: '123',
-            url: 'www.url',
           })
 
           const useSearchWeatherMocks = buildUseSearchWeather({
@@ -236,6 +236,23 @@ describe('<App/>', () => {
           subject({ useSearchWeatherMocks })
 
           expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+        })
+
+        it('does not show station list', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            data: ['Melbourne CBD', 'Alphington'],
+          })
+
+          const useSearchWeatherMocks = buildUseSearchWeather({
+            success: true,
+            data: weatherData,
+          })
+
+          subject({ useSearchStationMocks, useSearchWeatherMocks })
+
+          expect(
+            screen.queryByRole('list', { name: 'Stations' })
+          ).not.toBeInTheDocument()
         })
       })
 
