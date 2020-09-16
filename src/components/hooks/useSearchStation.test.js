@@ -14,11 +14,11 @@ afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('useSearchStation hook', () => {
-  function subject(stationName = '', data = []) {
+  function subject(stationName = '', data = [], status = '200') {
     const url = searchStationUrl(stationName)
     server.use(
       rest.get(url, (_req, res, ctx) => {
-        return res(ctx.status(200), ctx.json(data))
+        return res(ctx.status(status), ctx.json(data))
       })
     )
 
@@ -110,6 +110,17 @@ describe('useSearchStation hook', () => {
       },
     ]
 
+    it('sets success to true', async () => {
+      const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
+
+      act(() => {
+        result.current.searchStation('Melbourne')
+      })
+      await waitForNextUpdate()
+
+      expect(result.current.success).toBeTruthy()
+    })
+
     it('returns stations', async () => {
       const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
 
@@ -120,17 +131,6 @@ describe('useSearchStation hook', () => {
 
       expect(result.current.stations).toContain('Melbourne, CBD')
       expect(result.current.stations).toContain('Alphington')
-    })
-
-    it('sets success to true', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
-
-      act(() => {
-        result.current.searchStation('Melbourne')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.success).toBeTruthy()
     })
 
     it('sets loading to false', async () => {
@@ -153,6 +153,70 @@ describe('useSearchStation hook', () => {
       await waitForNextUpdate()
 
       expect(result.current.error).toBe('')
+    })
+  })
+
+  describe('failed search', () => {
+    it('sets success to false', async () => {
+      const { result, waitForNextUpdate } = subject(
+        'Melbourne',
+        stationsData,
+        '500'
+      )
+
+      act(() => {
+        result.current.searchStation('Melbourne')
+      })
+      await waitForNextUpdate()
+
+      expect(result.current.success).toBeFalsy()
+    })
+
+    it('sets stations as null', async () => {
+      const { result, waitForNextUpdate } = subject(
+        'Melbourne',
+        stationsData,
+        '500'
+      )
+
+      act(() => {
+        result.current.searchStation('Melbourne')
+      })
+      await waitForNextUpdate()
+
+      expect(result.current.stations).toBeNull()
+    })
+
+    it('sets loading to false', async () => {
+      const { result, waitForNextUpdate } = subject(
+        'Melbourne',
+        stationsData,
+        '500'
+      )
+
+      act(() => {
+        result.current.searchStation('Melbourne')
+      })
+      await waitForNextUpdate()
+
+      expect(result.current.loading).toBeFalsy()
+    })
+
+    it('sets error message', async () => {
+      const { result, waitForNextUpdate } = subject(
+        'Melbourne',
+        stationsData,
+        '500'
+      )
+
+      act(() => {
+        result.current.searchStation('Melbourne')
+      })
+      await waitForNextUpdate()
+
+      expect(result.current.error).toBe(
+        'Something went wrong. Please try again'
+      )
     })
   })
 })

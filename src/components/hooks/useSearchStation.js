@@ -9,22 +9,22 @@ export default function useSearchStation() {
   const [stations, setStations] = useState(null)
   const [success, setSuccess] = useState(null)
   const [loading, setLoading] = useState(false)
+  const [error, setError] = useState('')
 
   const searchStation = async (stationName) => {
     setLoading(true)
-    const res = await axios.get(searchStationUrl(stationName))
-    const stationNames = res.data.map(({ station: { name } }) => name)
-    setStations(stationNames)
-    setSuccess(true)
-    setLoading(false)
 
-    // console.log(stationNames)
-    // try {
-    // } catch (e) {
-    //   // console.log(stationName)
-    //   // console.log(e)
-    // }
+    try {
+      const res = await axios.get(searchStationUrl(stationName))
+      const stationNames = res.data.map(({ station: { name } }) => name)
+      setStations(stationNames)
+      setSuccess(true)
+    } catch (e) {
+      setSuccess(false)
+      setError('Something went wrong. Please try again')
+    }
+    setLoading(false)
   }
 
-  return { searchStation, stations, success, loading, error: '' }
+  return { searchStation, stations, success, loading, error: error }
 }
