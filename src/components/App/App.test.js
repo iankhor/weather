@@ -163,5 +163,43 @@ describe('<App/>', () => {
         })
       })
     })
+
+    describe('selecting a station to obtain weather data', () => {
+      describe('while fetching weather data', () => {})
+
+      describe('fetching weather data succeeded', () => {
+        it('show weather data', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            data: ['Melbourne CBD', 'Alphington'],
+          })
+
+          const weatherData = buildCityWeatherData({
+            cityName: 'Sydney',
+            geoLocation: {
+              lat: '99',
+              lng: '88',
+            },
+            aqi: '123',
+            url: 'www.url',
+          })
+
+          const useSearchWeatherMocks = buildUseSearchWeather({
+            success: true,
+            data: weatherData,
+          })
+          subject({ useSearchStationMocks, useSearchWeatherMocks })
+
+          const weatherInfo = screen.getByRole('none', { name: 'weather info' })
+
+          expect(within(weatherInfo).getByText('Sydney')).toBeInTheDocument()
+          expect(within(weatherInfo).getByText('99')).toBeInTheDocument()
+          expect(within(weatherInfo).getByText('88')).toBeInTheDocument()
+          expect(within(weatherInfo).getByText('123')).toBeInTheDocument()
+          expect(within(weatherInfo).getByText('www.url')).toBeInTheDocument()
+        })
+      })
+
+      describe('fetching weather data failed', () => {})
+    })
   })
 })

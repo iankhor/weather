@@ -1,5 +1,6 @@
 import React, { useState } from 'react'
 import useSearchStation from 'components/hooks/useSearchStation'
+import useSearchWeather from 'components/hooks/useSearchWeather'
 
 function Loader() {
   return (
@@ -12,7 +13,14 @@ function Loader() {
 export default function App() {
   const [station, setStation] = useState('')
 
-  const { loading, searchStation, data, error } = useSearchStation()
+  const {
+    loading: searchStationLoading,
+    searchStation,
+    data: searchStationData,
+    error: searchStationError,
+  } = useSearchStation()
+
+  const { data: searchWeatherData } = useSearchWeather()
 
   const onSearch = () => {
     searchStation(station)
@@ -42,20 +50,27 @@ export default function App() {
           You can search by the suburb or station name
         </small>
       </div>
-      {loading && Loader()}
-      {data?.length > 0 && (
+      {searchStationLoading && Loader()}
+      {searchStationData?.length > 0 && (
         <ul
           className="list pl0 ml0 center mw5 ba b--light-silver br3"
           aria-label="Stations"
         >
-          {data.map((station, index) => (
+          {searchStationData.map((station, index) => (
             <li key={index} className="ph3 pv2 bb b--light-silver">
               {station}
             </li>
           ))}
         </ul>
       )}
-      {error.length > 0 && <div>{error}</div>}
+      {searchStationError.length > 0 && <div>{searchStationError}</div>}
+      <dl role="none" className="lh-title pa4 mt0" aria-label="weather info">
+        <dt className="f6 b">{searchWeatherData.cityName}</dt>
+        <dt className="f6 b">{searchWeatherData.geoLocation.lat}</dt>
+        <dt className="f6 b">{searchWeatherData.geoLocation.lng}</dt>
+        <dt className="f6 b">{searchWeatherData.aqi}</dt>
+        <dt className="f6 b">{searchWeatherData.url}</dt>
+      </dl>
     </>
   )
 }
