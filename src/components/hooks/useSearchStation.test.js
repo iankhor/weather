@@ -121,7 +121,7 @@ describe('useSearchStation hook', () => {
       expect(result.current.success).toBeTruthy()
     })
 
-    it('returns stations', async () => {
+    it('sets stations', async () => {
       const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
 
       act(() => {
