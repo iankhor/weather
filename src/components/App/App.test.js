@@ -103,14 +103,18 @@ describe('<App/>', () => {
       })
 
       describe('search for successful', () => {
-        it('shows a list of stations', () => {
+        fit('shows a list of stations', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             success: true,
-            data: ['Melbourne', ''],
+            data: ['Melbourne CBD', 'Alphington'],
           })
           const { searchButton } = subject({ useSearchStationMocks })
 
           user.click(searchButton)
+
+          const stationList = screen.getByRole('list', { name: 'Stations' })
+
+          expect(stationList).toBeVisible()
         })
 
         it.todo('does not show loader')

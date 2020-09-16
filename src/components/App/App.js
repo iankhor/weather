@@ -37,6 +37,15 @@ export default function App() {
         You can search by the suburb or station name
       </small>
       {loading && Loader()}
+      <ul className="list pl0 ml0 center mw5 ba b--light-silver br3">
+        <li className="ph3 pv2 bb b--light-silver">Mackeral Tabby</li>
+        <li className="ph3 pv2 bb b--light-silver">Burmese</li>
+        <li className="ph3 pv2 bb b--light-silver">Maine Coon</li>
+        <li className="ph3 pv2 bb b--light-silver">Orange Tabby</li>
+        <li className="ph3 pv2 bb b--light-silver">Siamese</li>
+        <li className="ph3 pv2 bb b--light-silver">Scottish Fold</li>
+        <li className="ph3 pv2">American Bobtail</li>
+      </ul>
     </div>
   )
 }
