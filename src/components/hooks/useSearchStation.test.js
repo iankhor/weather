@@ -26,25 +26,25 @@ describe('useSearchStation hook', () => {
   }
 
   describe('initial states', () => {
-    it('has success as null', () => {
+    it('sets success as null', () => {
       const { result } = subject()
 
       expect(result.current.success).toBeNull()
     })
 
-    it('has stations as null', () => {
+    it('sets stations as null', () => {
       const { result } = subject()
 
       expect(result.current.stations).toBeNull()
     })
 
-    it('has loading as false', () => {
+    it('sets loading as false', () => {
       const { result } = subject()
 
       expect(result.current.loading).toBeFalsy()
     })
 
-    it('has error as null', () => {
+    it('sets error as null', () => {
       const { result } = subject()
 
       expect(result.current.error).toBe('')
@@ -52,7 +52,7 @@ describe('useSearchStation hook', () => {
   })
 
   describe('while searching', () => {
-    it('has success as null', async () => {
+    it('sets success as null', async () => {
       const { result, waitForNextUpdate } = subject()
 
       act(() => {
@@ -62,7 +62,7 @@ describe('useSearchStation hook', () => {
       await waitForNextUpdate()
     })
 
-    it('has stations as null', async () => {
+    it('sets stations as null', async () => {
       const { result, waitForNextUpdate } = subject()
 
       act(() => {
@@ -72,7 +72,7 @@ describe('useSearchStation hook', () => {
       await waitForNextUpdate()
     })
 
-    it('has loading as true', async () => {
+    it('sets loading as true', async () => {
       const { result, waitFor, waitForNextUpdate } = subject()
 
       act(() => {
@@ -85,7 +85,7 @@ describe('useSearchStation hook', () => {
       await waitForNextUpdate()
     })
 
-    it('has error as null', async () => {
+    it('sets error as null', async () => {
       const { result, waitForNextUpdate } = subject()
 
       act(() => {
