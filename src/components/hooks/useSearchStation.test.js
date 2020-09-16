@@ -1,30 +1,33 @@
 import { rest } from 'msw'
-import { setupServer } from 'msw/node'
 import axios from 'axios'
+import { searchStationUrl } from './useSearchStation'
+import { stationsData } from 'testLib/fixtures'
 
-const server = setupServer(
-  rest.get('/greeting', (req, res, ctx) => {
-    return res(ctx.json({ greeting: 'hello there' }))
-  })
-)
+import { setupServer } from 'msw/node'
+const server = setupServer()
 
 beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
 describe('useSearchStation hook', () => {
-  test('magic', async () => {
+  describe('successful search', () => {
+    const url = searchStationUrl('Melbourne')
     server.use(
-      rest.get('https://api.url', (req, res, ctx) => {
-        return res(ctx.status(200))
+      rest.get(url, (req, res, ctx) => {
+        return res(ctx.status(200), ctx.json(JSON.stringify(stationsData)))
       })
     )
 
-    try {
-      const data = await axios.get('https://api.url')
-      console.log(data)
-    } catch (e) {
-      console.log(e)
-    }
+    it('returns ...', async () => {
+      try {
+        const data = await axios.get(url)
+        console.log(data)
+      } catch (e) {
+        console.log(e)
+      }
+
+      expect(1).toBe(1)
+    })
   })
 })
