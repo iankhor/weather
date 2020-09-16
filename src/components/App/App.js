@@ -21,12 +21,19 @@ export default function App() {
   } = useSearchStation()
 
   const {
+    loading: searchWeatherLoading,
     data: searchWeatherData,
     error: searchWeatherError,
+    searchWeather,
   } = useSearchWeather()
 
-  const onSearch = () => {
+  const searchForStation = () => {
     searchStation(station)
+  }
+
+  const searchWeatherForStation = (e) => {
+    const station = e.target.getAttribute('data-value')
+    searchWeather(station)
   }
 
   return (
@@ -44,7 +51,7 @@ export default function App() {
           onChange={({ target: { value } }) => setStation(value)}
         />
         <button
-          onClick={onSearch}
+          onClick={searchForStation}
           className="f6 f5-l button-reset fl pv3 tc bn bg-animate bg-black-70 hover-bg-black white pointer w-100 w-25-m w-20-l br2-ns br--right-ns"
         >
           Search
@@ -53,14 +60,20 @@ export default function App() {
           You can search by the suburb or station name
         </small>
       </div>
-      {searchStationLoading && Loader()}
+      {(searchStationLoading || searchWeatherLoading) && <Loader />}
       {searchStationData?.length > 0 && (
         <ul
           className="list pl0 ml0 center mw5 ba b--light-silver br3"
           aria-label="Stations"
         >
           {searchStationData.map((station, index) => (
-            <li key={index} className="ph3 pv2 bb b--light-silver">
+            <li
+              key={index}
+              className="ph3 pv2 bb b--light-silver"
+              aria-label={station}
+              data-value={station}
+              onClick={searchWeatherForStation}
+            >
               {station}
             </li>
           ))}

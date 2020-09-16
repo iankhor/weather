@@ -25,7 +25,7 @@ function buildUseSearchWeather(mocks) {
     loading: false,
     success: null,
     data: buildCityWeatherData(),
-    searchWeatherForCity: jest.fn(),
+    searchWeather: jest.fn(),
     error: '',
     ...mocks,
   }
@@ -165,7 +165,36 @@ describe('<App/>', () => {
     })
 
     describe('selecting a station to obtain weather data', () => {
-      describe('while fetching weather data', () => {})
+      describe('while fetching weather data', () => {
+        it('shows Loading to show search progress', () => {
+          const useSearchWeatherMocks = buildUseSearchWeather({
+            loading: true,
+          })
+          subject({ useSearchWeatherMocks })
+
+          expect(
+            screen.getByRole('status', { name: 'progress' })
+          ).toBeInTheDocument()
+        })
+
+        it('has called the search function of the useSearchWeather hook when a station is selected', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            data: ['Melbourne CBD', 'Alphington'],
+          })
+
+          const searchWeartherSpy = jest.fn()
+          const useSearchWeatherMocks = buildUseSearchWeather({
+            searchWeather: searchWeartherSpy,
+          })
+
+          subject({ useSearchStationMocks, useSearchWeatherMocks })
+
+          const selection = screen.getByRole('listitem', { name: 'Alphington' })
+          user.click(selection)
+
+          expect(searchWeartherSpy).toHaveBeenNthCalledWith(1, 'Alphington')
+        })
+      })
 
       describe('fetching weather data succeeded', () => {
         it('show weather data', () => {
