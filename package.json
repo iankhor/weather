@@ -38,7 +38,8 @@
   },
   "jest": {
     "moduleNameMapper": {
-      "^components/([^\\.]*)$": "<rootDir>/src/components/$1"
+      "^components/([^\\.]*)$": "<rootDir>/src/components/$1",
+      "^testLib/([^\\.]*)$": "<rootDir>/testLib/$1"
     }
   }
 }

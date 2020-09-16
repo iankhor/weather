@@ -4,6 +4,7 @@ import { render, screen } from '@testing-library/react'
 import user from '@testing-library/user-event'
 import useSearchCity from 'components/hooks/useSearchCity'
 import useSearchWeather from 'components/hooks/useSearchWeather'
+import { buildCityWeatherData } from 'testLib/factories'
 
 jest.mock('components/hooks/useSearchCity')
 jest.mock('components/hooks/useSearchWeather')
@@ -22,7 +23,7 @@ function buildUseSearchWeather(mocks) {
   return {
     loading: false,
     success: null,
-    airQualityIndex: [],
+    data: buildCityWeatherData(),
     search: jest.fn(),
     ...mocks,
   }
@@ -32,17 +33,14 @@ const defaultSearchCityMocks = {}
 
 describe('<App/>', () => {
   describe('searching for a location', () => {
-    function subject() {
+    function subject({
+      useSearchCityMocks = buildUseSearchCityMocks(),
+      useSearchWeatherMocks = buildUseSearchWeather(),
+    } = {}) {
       render(<App />)
 
-      useSearchCity.mockReturnValueOnce({
-        loading: false,
-        success: null,
-        search: () => {},
-        cities: [],
-      })
-
-      useSearchWeather.mockReturnValue({})
+      useSearchCity.mockReturnValueOnce(useSearchCityMocks)
+      useSearchWeather.mockReturnValue(useSearchWeatherMocks)
 
       const searchField = screen.getByRole('textbox', {
         name: 'Search for a city',
