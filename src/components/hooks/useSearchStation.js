@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useState } from 'react'
 import axios from 'axios'
 
 export function searchStationUrl(stationName) {
@@ -6,15 +6,25 @@ export function searchStationUrl(stationName) {
 }
 
 export default function useSearchStation() {
-  const search = async (stationName) => {
-    try {
-      const resp = await axios.get(searchStationUrl(stationName))
-      // console.log(resp)
-    } catch (e) {
-      // console.log(stationName)
-      // console.log(e)
-    }
+  const [stations, setStations] = useState(null)
+  const [success, setSuccess] = useState(null)
+  const [loading, setLoading] = useState(false)
+
+  const searchStation = async (stationName) => {
+    setLoading(true)
+    const res = await axios.get(searchStationUrl(stationName))
+    const stationNames = res.data.map(({ station: { name } }) => name)
+    setStations(stationNames)
+    setSuccess(true)
+    setLoading(false)
+
+    // console.log(stationNames)
+    // try {
+    // } catch (e) {
+    //   // console.log(stationName)
+    //   // console.log(e)
+    // }
   }
 
-  return { search }
+  return { searchStation, stations, success, loading, error: '' }
 }
