@@ -211,7 +211,7 @@ describe('<App/>', () => {
       })
 
       describe('fetching weather data failed', () => {
-        it('does not show loader', () => {
+        it('shows an error message', () => {
           const useSearchWeatherMocks = buildUseSearchWeather({
             success: false,
             error: 'foobaz eror',
