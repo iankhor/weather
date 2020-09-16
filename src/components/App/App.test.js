@@ -2,19 +2,19 @@ import React from 'react'
 import App from 'components/App/App'
 import { render, screen } from '@testing-library/react'
 import user from '@testing-library/user-event'
-import useSearchCity from 'components/hooks/useSearchCity'
+import useSearchStation from 'components/hooks/useSearchStation'
 import useSearchWeather from 'components/hooks/useSearchWeather'
 import { buildCityWeatherData } from 'testLib/factories'
 
-jest.mock('components/hooks/useSearchCity')
+jest.mock('components/hooks/useSearchStation')
 jest.mock('components/hooks/useSearchWeather')
 
-function buildUseSearchCityMocks(mocks) {
+function buildUseSearchStationMocks(mocks) {
   return {
     loading: false,
     success: null,
     cities: [],
-    search: jest.fn(),
+    searchStation: jest.fn(),
     ...mocks,
   }
 }
@@ -24,26 +24,25 @@ function buildUseSearchWeather(mocks) {
     loading: false,
     success: null,
     data: buildCityWeatherData(),
-    search: jest.fn(),
+    searchWeatherForCity: jest.fn(),
     ...mocks,
   }
 }
 
-const defaultSearchCityMocks = {}
+const defaultSearchStationMocks = {}
 
 describe('<App/>', () => {
   describe('searching for a location', () => {
     function subject({
-      useSearchCityMocks = buildUseSearchCityMocks(),
+      useSearchStationMocks = buildUseSearchStationMocks(),
       useSearchWeatherMocks = buildUseSearchWeather(),
     } = {}) {
-      render(<App />)
-
-      useSearchCity.mockReturnValueOnce(useSearchCityMocks)
+      useSearchStation.mockReturnValue(useSearchStationMocks)
       useSearchWeather.mockReturnValue(useSearchWeatherMocks)
 
+      render(<App />)
       const searchField = screen.getByRole('textbox', {
-        name: 'Search for a city',
+        name: 'Search for a station',
       })
 
       const searchButton = screen.getByRole('button', {
@@ -73,9 +72,49 @@ describe('<App/>', () => {
     })
 
     describe('clicking on the search button', () => {
-      describe('while searching', () => {})
+      describe('while searching', () => {
+        it('shows Loading to show search progress', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            loading: true,
+          })
+          const { searchButton } = subject({ useSearchStationMocks })
 
-      describe('search for successful', () => {})
+          user.click(searchButton)
+
+          expect(screen.getByText('Loading...')).toBeInTheDocument()
+        })
+
+        it('has called the search function of the useSearchStation hook ', () => {
+          const searchStationSpy = jest.fn()
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            loading: true,
+            searchStation: searchStationSpy,
+          })
+
+          const { searchField, searchButton } = subject({
+            useSearchStationMocks,
+          })
+
+          user.type(searchField, 'Melbourne')
+          user.click(searchButton)
+
+          expect(searchStationSpy).toHaveBeenNthCalledWith(1, 'Melbourne')
+        })
+      })
+
+      describe('search for successful', () => {
+        it('shows a list of stations', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            success: true,
+            data: ['Melbourne', ''],
+          })
+          const { searchButton } = subject({ useSearchStationMocks })
+
+          user.click(searchButton)
+        })
+
+        it.todo('does not show loader')
+      })
 
       describe('search has failed', () => {})
     })
