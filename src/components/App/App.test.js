@@ -1,6 +1,6 @@
 import React from 'react'
 import App from 'components/App/App'
-import { render, screen } from '@testing-library/react'
+import { render, screen, within } from '@testing-library/react'
 import user from '@testing-library/user-event'
 import useSearchStation from 'components/hooks/useSearchStation'
 import useSearchWeather from 'components/hooks/useSearchWeather'
@@ -81,7 +81,9 @@ describe('<App/>', () => {
 
           user.click(searchButton)
 
-          expect(screen.getByText('Loading...')).toBeInTheDocument()
+          expect(
+            screen.getByRole('status', { name: 'progress' })
+          ).toBeInTheDocument()
         })
 
         it('has called the search function of the useSearchStation hook ', () => {
@@ -100,10 +102,23 @@ describe('<App/>', () => {
 
           expect(searchStationSpy).toHaveBeenNthCalledWith(1, 'Melbourne')
         })
+
+        it('does not show list of stations', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            loading: true,
+          })
+          const { searchButton } = subject({ useSearchStationMocks })
+
+          user.click(searchButton)
+
+          expect(
+            screen.queryByRole('list', { name: 'Stations' })
+          ).not.toBeInTheDocument()
+        })
       })
 
       describe('search for successful', () => {
-        fit('shows a list of stations', () => {
+        it('shows a list of stations', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             success: true,
             data: ['Melbourne CBD', 'Alphington'],
@@ -113,11 +128,26 @@ describe('<App/>', () => {
           user.click(searchButton)
 
           const stationList = screen.getByRole('list', { name: 'Stations' })
+          const listItems = within(stationList)
+            .getAllByRole('listitem')
+            .map((i) => i.textContent)
 
           expect(stationList).toBeVisible()
+          expect(listItems).toHaveLength(2)
+          expect(listItems).toContain('Melbourne CBD')
+          expect(listItems).toContain('Alphington')
         })
 
-        it.todo('does not show loader')
+        it('does not show loader', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            data: ['Melbourne CBD', 'Alphington'],
+          })
+          const { searchButton } = subject({ useSearchStationMocks })
+
+          user.click(searchButton)
+
+          expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+        })
       })
 
       describe('search has failed', () => {})

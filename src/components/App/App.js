@@ -2,13 +2,17 @@ import React, { useState } from 'react'
 import useSearchStation from 'components/hooks/useSearchStation'
 
 function Loader() {
-  return <div>Loading...</div>
+  return (
+    <div role="status" aria-label="progress">
+      Loading...
+    </div>
+  )
 }
 
 export default function App() {
   const [station, setStation] = useState('')
 
-  const { loading, searchStation } = useSearchStation()
+  const { loading, searchStation, data } = useSearchStation()
 
   const onSearch = () => {
     searchStation(station)
@@ -37,15 +41,18 @@ export default function App() {
         You can search by the suburb or station name
       </small>
       {loading && Loader()}
-      <ul className="list pl0 ml0 center mw5 ba b--light-silver br3">
-        <li className="ph3 pv2 bb b--light-silver">Mackeral Tabby</li>
-        <li className="ph3 pv2 bb b--light-silver">Burmese</li>
-        <li className="ph3 pv2 bb b--light-silver">Maine Coon</li>
-        <li className="ph3 pv2 bb b--light-silver">Orange Tabby</li>
-        <li className="ph3 pv2 bb b--light-silver">Siamese</li>
-        <li className="ph3 pv2 bb b--light-silver">Scottish Fold</li>
-        <li className="ph3 pv2">American Bobtail</li>
-      </ul>
+      {data?.length > 0 && (
+        <ul
+          className="list pl0 ml0 center mw5 ba b--light-silver br3"
+          aria-label="Stations"
+        >
+          {data.map((station, index) => (
+            <li key={index} className="ph3 pv2 bb b--light-silver">
+              {station}
+            </li>
+          ))}
+        </ul>
+      )}
     </div>
   )
 }
