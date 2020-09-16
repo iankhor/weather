@@ -15,6 +15,7 @@ function buildUseSearchStationMocks(mocks) {
     success: null,
     cities: [],
     searchStation: jest.fn(),
+    error: '',
     ...mocks,
   }
 }
@@ -25,6 +26,7 @@ function buildUseSearchWeather(mocks) {
     success: null,
     data: buildCityWeatherData(),
     searchWeatherForCity: jest.fn(),
+    error: '',
     ...mocks,
   }
 }
@@ -76,10 +78,9 @@ describe('<App/>', () => {
         it('shows Loading to show search progress', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             loading: true,
+            success: null,
           })
-          const { searchButton } = subject({ useSearchStationMocks })
-
-          user.click(searchButton)
+          subject({ useSearchStationMocks })
 
           expect(
             screen.getByRole('status', { name: 'progress' })
@@ -106,10 +107,9 @@ describe('<App/>', () => {
         it('does not show list of stations', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             loading: true,
+            success: null,
           })
-          const { searchButton } = subject({ useSearchStationMocks })
-
-          user.click(searchButton)
+          subject({ useSearchStationMocks })
 
           expect(
             screen.queryByRole('list', { name: 'Stations' })
@@ -123,9 +123,7 @@ describe('<App/>', () => {
             success: true,
             data: ['Melbourne CBD', 'Alphington'],
           })
-          const { searchButton } = subject({ useSearchStationMocks })
-
-          user.click(searchButton)
+          subject({ useSearchStationMocks })
 
           const stationList = screen.getByRole('list', { name: 'Stations' })
           const listItems = within(stationList)
@@ -140,17 +138,30 @@ describe('<App/>', () => {
 
         it('does not show loader', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
+            success: true,
             data: ['Melbourne CBD', 'Alphington'],
           })
           const { searchButton } = subject({ useSearchStationMocks })
-
-          user.click(searchButton)
 
           expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
         })
       })
 
-      describe('search has failed', () => {})
+      describe('search has failed', () => {
+        it('shows an error message', () => {
+          const useSearchStationMocks = buildUseSearchStationMocks({
+            success: false,
+            error: 'Something went wrong. Please try again',
+          })
+          subject({ useSearchStationMocks })
+
+          const errorText = screen.getByText(
+            'Something went wrong. Please try again'
+          )
+
+          expect(errorText).toBeInTheDocument()
+        })
+      })
     })
   })
 })
