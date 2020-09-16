@@ -67,7 +67,7 @@ export default function App() {
             className="list pl0 ml0 center mw5 ba b--light-silver br3"
             aria-label="Stations"
           >
-            {searchStationData.map((station, index) => (
+          {searchStationData.map((station, index) => (fix
               <li
                 key={index}
                 className="ph3 pv2 bb b--light-silver"

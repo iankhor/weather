@@ -4,6 +4,9 @@ import { searchStationUrl } from './useSearchStation'
 import { stationsData } from 'testLib/fixtures'
 
 import { setupServer } from 'msw/node'
+import { renderHook } from '@testing-library/react-hooks'
+import useSearchStation from './useSearchStation'
+
 const server = setupServer()
 
 beforeAll(() => server.listen())
@@ -12,22 +15,26 @@ afterAll(() => server.close())
 
 describe('useSearchStation hook', () => {
   describe('successful search', () => {
-    const url = searchStationUrl('Melbourne')
-    server.use(
-      rest.get(url, (req, res, ctx) => {
-        return res(ctx.status(200), ctx.json(JSON.stringify(stationsData)))
-      })
-    )
+    function subject(stationName, data) {
+      const url = searchStationUrl(stationName)
+      server.use(
+        rest.get(url, (req, res, ctx) => {
+          return res(ctx.status(200), ctx.json(JSON.stringify(data)))
+        })
+      )
+    }
 
     it('returns ...', async () => {
-      try {
-        const data = await axios.get(url)
-        console.log(data)
-      } catch (e) {
-        console.log(e)
-      }
+      subject('Melbourne', stationsData)
+      const url = searchStationUrl('Melbourne')
 
-      expect(1).toBe(1)
+      const { result, waitFor } = renderHook(() => useSearchStation())
+
+      result.current.search('Melbourne')
+
+      await waitFor(() => {
+        console.log(result)
+      })
     })
   })
 })
