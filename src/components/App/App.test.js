@@ -8,15 +8,41 @@ import useSearchWeather from 'components/hooks/useSearchWeather'
 jest.mock('components/hooks/useSearchCity')
 jest.mock('components/hooks/useSearchWeather')
 
-beforeEach(() => {
-  useSearchCity.mockReturnValue({})
-  useSearchWeather.mockReturnValue({})
-})
+function buildUseSearchCityMocks(mocks) {
+  return {
+    loading: false,
+    success: null,
+    cities: [],
+    search: jest.fn(),
+    ...mocks,
+  }
+}
+
+function buildUseSearchWeather(mocks) {
+  return {
+    loading: false,
+    success: null,
+    airQualityIndex: [],
+    search: jest.fn(),
+    ...mocks,
+  }
+}
+
+const defaultSearchCityMocks = {}
 
 describe('<App/>', () => {
   describe('searching for a location', () => {
     function subject() {
       render(<App />)
+
+      useSearchCity.mockReturnValueOnce({
+        loading: false,
+        success: null,
+        search: () => {},
+        cities: [],
+      })
+
+      useSearchWeather.mockReturnValue({})
 
       const searchField = screen.getByRole('textbox', {
         name: 'Search for a city',
@@ -46,6 +72,14 @@ describe('<App/>', () => {
 
       user.type(searchField, 'Melbourne')
       expect(searchField).toHaveValue('Melbourne')
+    })
+
+    describe('clicking on the search button', () => {
+      describe('while searching', () => {})
+
+      describe('search for successful', () => {})
+
+      describe('search has failed', () => {})
     })
   })
 })
