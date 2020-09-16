@@ -197,9 +197,32 @@ describe('<App/>', () => {
           expect(within(weatherInfo).getByText('123')).toBeInTheDocument()
           expect(within(weatherInfo).getByText('www.url')).toBeInTheDocument()
         })
+
+        it('does not show loader', () => {
+          const weatherData = buildCityWeatherData()
+          const useSearchWeatherMocks = buildUseSearchWeather({
+            success: true,
+            data: weatherData,
+          })
+          subject({ useSearchWeatherMocks })
+
+          expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
+        })
       })
 
-      describe('fetching weather data failed', () => {})
+      describe('fetching weather data failed', () => {
+        it('does not show loader', () => {
+          const useSearchWeatherMocks = buildUseSearchWeather({
+            success: false,
+            error: 'foobaz eror',
+          })
+          subject({ useSearchWeatherMocks })
+
+          const errorText = screen.getByText('foobaz eror')
+
+          expect(errorText).toBeInTheDocument()
+        })
+      })
     })
   })
 })

@@ -20,7 +20,10 @@ export default function App() {
     error: searchStationError,
   } = useSearchStation()
 
-  const { data: searchWeatherData } = useSearchWeather()
+  const {
+    data: searchWeatherData,
+    error: searchWeatherError,
+  } = useSearchWeather()
 
   const onSearch = () => {
     searchStation(station)
@@ -64,6 +67,7 @@ export default function App() {
         </ul>
       )}
       {searchStationError.length > 0 && <div>{searchStationError}</div>}
+      {searchWeatherError.length > 0 && <div>{searchWeatherError}</div>}
       <dl role="none" className="lh-title pa4 mt0" aria-label="weather info">
         <dt className="f6 b">{searchWeatherData.cityName}</dt>
         <dt className="f6 b">{searchWeatherData.geoLocation.lat}</dt>
