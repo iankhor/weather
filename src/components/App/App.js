@@ -37,8 +37,6 @@ export default function App() {
     searchWeather(station)
   }
 
-  console.log(searchStationData)
-
   return (
     <>
       <div className="flex flex-column">
