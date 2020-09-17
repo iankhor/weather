@@ -1,30 +1,52 @@
-import React, { useState } from 'react'
+import React, { useState, useReducer } from 'react'
 import axios from 'axios'
 
 export function searchStationUrl(stationName) {
   return `http://api.waqi.info/search/?keyword=${stationName}&token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`
 }
 
+const initState = {
+  success: null,
+  loading: false,
+  error: '',
+  stations: null,
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'loading':
+      return { ...state, loading: true }
+    case 'success':
+      return {
+        ...state,
+        stations: action.stations,
+        loading: false,
+        success: true,
+      }
+    case 'error':
+      return {
+        ...state,
+        error: 'Something went wrong. Please try again',
+        loading: false,
+        success: false,
+      }
+  }
+}
+
 export default function useSearchStation() {
-  const [stations, setStations] = useState(null)
-  const [success, setSuccess] = useState(null)
-  const [loading, setLoading] = useState(false)
-  const [error, setError] = useState('')
+  const [state, dispatch] = useReducer(reducer, initState)
 
   const searchStation = async (stationName) => {
-    setLoading(true)
+    dispatch({ type: 'loading' })
 
     try {
       const res = await axios.get(searchStationUrl(stationName))
       const stationNames = res.data.map(({ station: { name } }) => name)
-      setStations(stationNames)
-      setSuccess(true)
+      dispatch({ type: 'success', stations: stationNames })
     } catch (e) {
-      setSuccess(false)
-      setError('Something went wrong. Please try again')
+      dispatch({ type: 'error' })
     }
-    setLoading(false)
   }
 
-  return { searchStation, stations, success, loading, error: error }
+  return { searchStation, ...state }
 }
