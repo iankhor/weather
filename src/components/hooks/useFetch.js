@@ -1,0 +1,50 @@
+import { useReducer } from 'react'
+import axios from 'axios'
+
+const initState = {
+  success: null,
+  loading: false,
+  error: '',
+  stations: null,
+}
+
+function reducer(state, action) {
+  switch (action.type) {
+    case 'loading':
+      return { ...state, loading: true }
+    case 'success':
+      return {
+        ...state,
+        stations: action.stations,
+        loading: false,
+        success: true,
+      }
+    case 'error':
+      return {
+        ...state,
+        error: 'Something went wrong. Please try again',
+        loading: false,
+        success: false,
+      }
+
+    default:
+      return state
+  }
+}
+
+export default function useFetch({ serializer }) {
+  const [state, dispatch] = useReducer(reducer, initState)
+
+  const fetch = async (url) => {
+    dispatch({ type: 'loading' })
+
+    try {
+      const res = await axios.get(url)
+      dispatch({ type: 'success', data: serializer(res.data) })
+    } catch (e) {
+      dispatch({ type: 'error' })
+    }
+  }
+
+  return { fetch, ...state }
+}
