@@ -2,30 +2,31 @@ import React from 'react'
 import App from 'components/App/App'
 import { render, screen, within } from '@testing-library/react'
 import user from '@testing-library/user-event'
-import useSearchStation from 'components/App/hooks/useSearchStation'
-import useSearchWeather from 'components/App/hooks/useSearchWeather'
+import useStations from 'components/App/hooks/useStations'
+import useFeed from 'components/App/hooks/useFeed'
 import { buildCityWeatherData } from 'testLib/factories'
 
-jest.mock('components/App/hooks/useSearchStation')
-jest.mock('components/App/hooks/useSearchWeather')
+jest.mock('components/App/hooks/useStations')
+jest.mock('components/App/hooks/useFeed')
 
-function buildUseSearchStationMocks(mocks) {
+function buildUseStationsMocks(mocks) {
   return {
     loading: false,
     success: null,
     stations: [],
-    searchStation: jest.fn(),
+    fetchStations: jest.fn(),
     error: '',
     ...mocks,
   }
 }
 
-function buildUseSearchWeather(mocks) {
+function buildUseFeedMocks(mocks) {
   return {
     loading: false,
     success: null,
     feed: {},
-    searchWeather: jest.fn(),
+    fetchFeed: jest.fn(),
+    resetFeed: jest.fn(),
     error: '',
     ...mocks,
   }
@@ -36,11 +37,11 @@ const defaultSearchStationMocks = {}
 describe('<App/>', () => {
   describe('searching for a location', () => {
     function subject({
-      useSearchStationMocks = buildUseSearchStationMocks(),
-      useSearchWeatherMocks = buildUseSearchWeather(),
+      useStationsMocks = buildUseStationsMocks(),
+      useFeedMocks = buildUseFeedMocks(),
     } = {}) {
-      useSearchStation.mockReturnValue(useSearchStationMocks)
-      useSearchWeather.mockReturnValue(useSearchWeatherMocks)
+      useStations.mockReturnValue(useStationsMocks)
+      useFeed.mockReturnValue(useFeedMocks)
 
       render(<App />)
       const searchField = screen.getByRole('textbox', {
@@ -76,26 +77,26 @@ describe('<App/>', () => {
     describe('clicking on the search button', () => {
       describe('while searching', () => {
         it('shows Loading to show search progress', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             loading: true,
             success: null,
           })
-          subject({ useSearchStationMocks })
+          subject({ useStationsMocks })
 
           expect(
             screen.getByRole('status', { name: 'progress' })
           ).toBeInTheDocument()
         })
 
-        it('has called the search function of the useSearchStation hook ', () => {
+        it('has called the search function of the useStations hook ', () => {
           const searchStationSpy = jest.fn()
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             loading: true,
-            searchStation: searchStationSpy,
+            fetchStations: searchStationSpy,
           })
 
           const { searchField, searchButton } = subject({
-            useSearchStationMocks,
+            useStationsMocks,
           })
 
           user.type(searchField, 'Melbourne')
@@ -105,11 +106,11 @@ describe('<App/>', () => {
         })
 
         it('does not show list of stations', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             loading: true,
             success: null,
           })
-          subject({ useSearchStationMocks })
+          subject({ useStationsMocks })
 
           expect(
             screen.queryByRole('list', { name: 'Stations' })
@@ -119,11 +120,11 @@ describe('<App/>', () => {
 
       describe('search for successful', () => {
         it('shows a list of stations', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             success: true,
             stations: ['Melbourne CBD', 'Alphington'],
           })
-          subject({ useSearchStationMocks })
+          subject({ useStationsMocks })
 
           const stationList = screen.getByRole('list', { name: 'Stations' })
           const listItems = within(stationList)
@@ -137,11 +138,11 @@ describe('<App/>', () => {
         })
 
         it('does not show loader', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             success: true,
             stations: ['Melbourne CBD', 'Alphington'],
           })
-          const { searchButton } = subject({ useSearchStationMocks })
+          const { searchButton } = subject({ useStationsMocks })
 
           expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
         })
@@ -149,11 +150,11 @@ describe('<App/>', () => {
 
       describe('search has failed', () => {
         it('shows an error message', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             success: false,
             error: 'Something went wrong. Please try again',
           })
-          subject({ useSearchStationMocks })
+          subject({ useStationsMocks })
 
           const errorText = screen.getByText(
             'Something went wrong. Please try again'
@@ -167,27 +168,27 @@ describe('<App/>', () => {
     describe('selecting a station to obtain weather data', () => {
       describe('while fetching weather data', () => {
         it('shows Loading to show search progress', () => {
-          const useSearchWeatherMocks = buildUseSearchWeather({
+          const useFeedMocks = buildUseFeedMocks({
             loading: true,
           })
-          subject({ useSearchWeatherMocks })
+          subject({ useFeedMocks })
 
           expect(
             screen.getByRole('status', { name: 'progress' })
           ).toBeInTheDocument()
         })
 
-        it('has called the search function of the useSearchWeather hook when a station is selected', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+        it('has called the search function of the useFeed hook when a station is selected', () => {
+          const useStationsMocks = buildUseStationsMocks({
             stations: ['Melbourne CBD', 'Alphington'],
           })
 
           const searchWeartherSpy = jest.fn()
-          const useSearchWeatherMocks = buildUseSearchWeather({
-            searchWeather: searchWeartherSpy,
+          const useFeedMocks = buildUseFeedMocks({
+            fetchFeed: searchWeartherSpy,
           })
 
-          subject({ useSearchStationMocks, useSearchWeatherMocks })
+          subject({ useStationsMocks, useFeedMocks })
 
           const selection = screen.getByRole('listitem', { name: 'Alphington' })
           user.click(selection)
@@ -208,15 +209,15 @@ describe('<App/>', () => {
         })
 
         it('show weather data', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             stations: ['Melbourne CBD', 'Alphington'],
           })
 
-          const useSearchWeatherMocks = buildUseSearchWeather({
+          const useFeedMocks = buildUseFeedMocks({
             success: true,
             feed: weatherData,
           })
-          subject({ useSearchStationMocks, useSearchWeatherMocks })
+          subject({ useStationsMocks, useFeedMocks })
 
           const weatherInfo = screen.getByRole('article', {
             name: 'weather info',
@@ -230,26 +231,26 @@ describe('<App/>', () => {
 
         it('does not show loader', () => {
           const weatherData = buildCityWeatherData()
-          const useSearchWeatherMocks = buildUseSearchWeather({
+          const useFeedMocks = buildUseFeedMocks({
             success: true,
             feed: weatherData,
           })
-          subject({ useSearchWeatherMocks })
+          subject({ useFeedMocks })
 
           expect(screen.queryByText('Loading...')).not.toBeInTheDocument()
         })
 
         it('does not show station list', () => {
-          const useSearchStationMocks = buildUseSearchStationMocks({
+          const useStationsMocks = buildUseStationsMocks({
             stations: ['Melbourne CBD', 'Alphington'],
           })
 
-          const useSearchWeatherMocks = buildUseSearchWeather({
+          const useFeedMocks = buildUseFeedMocks({
             success: true,
             feed: weatherData,
           })
 
-          subject({ useSearchStationMocks, useSearchWeatherMocks })
+          subject({ useStationsMocks, useFeedMocks })
 
           expect(
             screen.queryByRole('list', { name: 'Stations' })
@@ -259,11 +260,11 @@ describe('<App/>', () => {
 
       describe('fetching weather data failed', () => {
         it('shows an error message', () => {
-          const useSearchWeatherMocks = buildUseSearchWeather({
+          const useFeedMocks = buildUseFeedMocks({
             success: false,
             error: 'foobaz eror',
           })
-          subject({ useSearchWeatherMocks })
+          subject({ useFeedMocks })
 
           const errorText = screen.getByText('foobaz eror')
 

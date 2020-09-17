@@ -10,10 +10,10 @@ export function buildSearchUrl(name) {
   )
 }
 
-export default function useSearchStation() {
+export default function useStations() {
   const { fetch, data, ...state } = useFetch()
 
-  const searchStation = (name) => fetch(buildSearchUrl(name))
+  const fetchStations = (name) => fetch(buildSearchUrl(name))
 
-  return { searchStation, stations: serializeStationList(data), ...state }
+  return { fetchStations, stations: serializeStationList(data), ...state }
 }
