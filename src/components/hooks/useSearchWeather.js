@@ -17,7 +17,7 @@ function serializeFeed(feed) {
   }
 }
 
-export default function useSearchStation() {
+export default function useSearchWeather() {
   const { fetch, data, ...state } = useFetch()
 
   const searchWeather = (name) =>

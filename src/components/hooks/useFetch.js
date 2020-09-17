@@ -5,7 +5,7 @@ const initState = {
   success: null,
   loading: false,
   error: '',
-  stations: null,
+  data: null,
 }
 
 function reducer(state, action) {
