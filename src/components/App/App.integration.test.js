@@ -5,8 +5,8 @@ import {
   screen,
   waitForElementToBeRemoved,
 } from '@testing-library/react'
-import { buildSearchUrl } from '../hooks/useSearchStation'
-import { buildFeedUrl } from '../hooks/useSearchWeather'
+import { buildSearchUrl } from './hooks/useSearchStation'
+import { buildFeedUrl } from './hooks/useSearchWeather'
 import user from '@testing-library/user-event'
 import { rest } from 'msw'
 

@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import useSearchStation from '../hooks/useSearchStation'
-import useSearchWeather from '../hooks/useSearchWeather'
+import useSearchStation from './hooks/useSearchStation'
+import useSearchWeather from './hooks/useSearchWeather'
 import 'tachyons'
 
 function Loader() {

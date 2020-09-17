@@ -2,12 +2,12 @@ import React from 'react'
 import App from 'components/App/App'
 import { render, screen, within } from '@testing-library/react'
 import user from '@testing-library/user-event'
-import useSearchStation from 'components/hooks/useSearchStation'
-import useSearchWeather from 'components/hooks/useSearchWeather'
+import useSearchStation from 'components/App/hooks/useSearchStation'
+import useSearchWeather from 'components/App/hooks/useSearchWeather'
 import { buildCityWeatherData } from 'testLib/factories'
 
-jest.mock('components/hooks/useSearchStation')
-jest.mock('components/hooks/useSearchWeather')
+jest.mock('components/App/hooks/useSearchStation')
+jest.mock('components/App/hooks/useSearchWeather')
 
 function buildUseSearchStationMocks(mocks) {
   return {
