@@ -1,6 +1,6 @@
 import React, { useState } from 'react'
-import useSearchStation from 'components/hooks/useSearchStation'
-import useSearchWeather from 'components/hooks/useSearchWeather'
+import useSearchStation from '../hooks/useSearchStation'
+import useSearchWeather from '../hooks/useSearchWeather'
 
 function Loader() {
   return (
@@ -62,7 +62,7 @@ export default function App() {
       </div>
       {(searchStationLoading || searchWeatherLoading) && <Loader />}
       {searchStationData?.length > 0 &&
-        Object.keys(searchWeatherData).length === 0 && (
+        Object.keys(searchWeatherData || {}).length === 0 && (
           <ul
             className="list pl0 ml0 center mw5 ba b--light-silver br3"
             aria-label="Stations"
@@ -82,7 +82,7 @@ export default function App() {
         )}
       {searchStationError.length > 0 && <div>{searchStationError}</div>}
       {searchWeatherError.length > 0 && <div>{searchWeatherError}</div>}
-      {Object.keys(searchWeatherData).length > 0 && (
+      {Object.keys(searchWeatherData || {}).length > 0 && (
         <dl role="none" className="lh-title pa4 mt0" aria-label="weather info">
           <dt className="f6 b">{searchWeatherData.cityName}</dt>
           <dt className="f6 b">{searchWeatherData.geoLocation.lat}</dt>

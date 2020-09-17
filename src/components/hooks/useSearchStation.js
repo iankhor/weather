@@ -41,9 +41,10 @@ export default function useSearchStation() {
 
     try {
       const res = await axios.get(searchStationUrl(stationName))
-      const stationNames = res.data.map(({ station: { name } }) => name)
+      const stationNames = res.data.data.map(({ station: { name } }) => name)
       dispatch({ type: 'success', stations: stationNames })
     } catch (e) {
+      console.log(e)
       dispatch({ type: 'error' })
     }
   }

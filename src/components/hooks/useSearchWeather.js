@@ -52,10 +52,12 @@ export default function useSearchStation() {
 
     try {
       const res = await axios.get(searchWeatherUrl(stationName))
-      const feed = serializeFeed(res.data)
+      console.log(res.data)
+      const feed = serializeFeed(res.data.data)
 
       dispatch({ type: 'success', feed })
     } catch (e) {
+      console.log(e)
       dispatch({ type: 'error' })
     }
   }
