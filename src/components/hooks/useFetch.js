@@ -35,14 +35,14 @@ function reducer(state, action) {
 export default function useFetch() {
   const [state, dispatch] = useReducer(reducer, initState)
 
-  const fetch = async (url, serializeData) => {
+  const fetch = async (url) => {
     dispatch({ type: 'loading' })
 
     try {
       const res = await axios.get(url)
-      dispatch({ type: 'success', data: serializeData(res.data.data) })
+      dispatch({ type: 'success', data: res.data.data })
     } catch (e) {
-      console.log(e)
+      console.error(e)
       dispatch({ type: 'error' })
     }
   }

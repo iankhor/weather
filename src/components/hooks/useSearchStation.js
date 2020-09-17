@@ -6,7 +6,7 @@ export function searchStationUrl(stationName) {
 }
 
 function serializeStationList(stations) {
-  return stations.map(({ station: { name } }) => name)
+  return stations && stations.map(({ station: { name } }) => name)
 }
 
 export default function useSearchStation() {
@@ -14,11 +14,10 @@ export default function useSearchStation() {
 
   const searchStation = (name) =>
     fetch(
-      `http://api.waqi.info/search/?keyword=${name}&token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`,
-      serializeStationList
+      `http://api.waqi.info/search/?keyword=${name}&token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`
     )
 
   console.log(data)
 
-  return { searchStation, stations: data, ...state }
+  return { searchStation, stations: serializeStationList(data), ...state }
 }
