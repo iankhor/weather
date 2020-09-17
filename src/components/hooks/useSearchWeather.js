@@ -1,9 +1,5 @@
 import useFetch from './useFetch'
 
-export function searchWeatherUrl(stationName) {
-  return
-}
-
 function serializeFeed(feed) {
   return (
     feed && {
