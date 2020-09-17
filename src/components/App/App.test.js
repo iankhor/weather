@@ -218,12 +218,14 @@ describe('<App/>', () => {
           })
           subject({ useSearchStationMocks, useSearchWeatherMocks })
 
-          const weatherInfo = screen.getByRole('none', { name: 'weather info' })
+          const weatherInfo = screen.getByRole('article', {
+            name: 'weather info',
+          })
 
           expect(within(weatherInfo).getByText('Sydney')).toBeInTheDocument()
-          expect(within(weatherInfo).getByText('99')).toBeInTheDocument()
-          expect(within(weatherInfo).getByText('88')).toBeInTheDocument()
-          expect(within(weatherInfo).getByText('123')).toBeInTheDocument()
+          expect(within(weatherInfo).getByText(/99/)).toBeInTheDocument()
+          expect(within(weatherInfo).getByText(/88/)).toBeInTheDocument()
+          expect(within(weatherInfo).getByText(/123/)).toBeInTheDocument()
           expect(within(weatherInfo).getByText('www.url')).toBeInTheDocument()
         })
 
