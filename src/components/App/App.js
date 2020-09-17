@@ -16,7 +16,7 @@ export default function App() {
   const {
     loading: searchStationLoading,
     searchStation,
-    data: searchStationData,
+    stations: searchStationData,
     error: searchStationError,
   } = useSearchStation()
 
@@ -67,7 +67,7 @@ export default function App() {
             className="list pl0 ml0 center mw5 ba b--light-silver br3"
             aria-label="Stations"
           >
-          {searchStationData.map((station, index) => (fix
+            {searchStationData.map((station, index) => (
               <li
                 key={index}
                 className="ph3 pv2 bb b--light-silver"

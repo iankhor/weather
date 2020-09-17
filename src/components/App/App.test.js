@@ -13,7 +13,7 @@ function buildUseSearchStationMocks(mocks) {
   return {
     loading: false,
     success: null,
-    cities: [],
+    stations: [],
     searchStation: jest.fn(),
     error: '',
     ...mocks,
@@ -121,7 +121,7 @@ describe('<App/>', () => {
         it('shows a list of stations', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             success: true,
-            data: ['Melbourne CBD', 'Alphington'],
+            stations: ['Melbourne CBD', 'Alphington'],
           })
           subject({ useSearchStationMocks })
 
@@ -139,7 +139,7 @@ describe('<App/>', () => {
         it('does not show loader', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
             success: true,
-            data: ['Melbourne CBD', 'Alphington'],
+            stations: ['Melbourne CBD', 'Alphington'],
           })
           const { searchButton } = subject({ useSearchStationMocks })
 
@@ -179,7 +179,7 @@ describe('<App/>', () => {
 
         it('has called the search function of the useSearchWeather hook when a station is selected', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
-            data: ['Melbourne CBD', 'Alphington'],
+            stations: ['Melbourne CBD', 'Alphington'],
           })
 
           const searchWeartherSpy = jest.fn()
@@ -209,7 +209,7 @@ describe('<App/>', () => {
 
         it('show weather data', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
-            data: ['Melbourne CBD', 'Alphington'],
+            stations: ['Melbourne CBD', 'Alphington'],
           })
 
           const useSearchWeatherMocks = buildUseSearchWeather({
@@ -240,7 +240,7 @@ describe('<App/>', () => {
 
         it('does not show station list', () => {
           const useSearchStationMocks = buildUseSearchStationMocks({
-            data: ['Melbourne CBD', 'Alphington'],
+            stations: ['Melbourne CBD', 'Alphington'],
           })
 
           const useSearchWeatherMocks = buildUseSearchWeather({
