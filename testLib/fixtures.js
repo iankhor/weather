@@ -8,7 +8,7 @@ export const stationsData = [
       vtime: 1600241400,
     },
     station: {
-      name: 'Peenya, Bangalore, India',
+      name: 'Bangalore',
       geo: [13.0339, 77.51321111],
       url: 'india/bangalore/peenya',
       country: 'IN',
@@ -25,7 +25,7 @@ export const stationFeed = {
     tz: '-06:00',
   },
   city: {
-    name: 'Chi_sp, Illinois',
+    name: 'Bangalore',
     url: 'https://aqicn.org/city/usa/illinois/chi_sp/',
     geo: ['41.913600', '-87.723900'],
   },

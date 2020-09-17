@@ -12,15 +12,16 @@ function serializeFeed(feed) {
   )
 }
 
+export function buildFeedUrl(name) {
+  return encodeURI(
+    `http://api.waqi.info/feed/${name}/?token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`
+  )
+}
+
 export default function useSearchWeather() {
   const { fetch, data, ...state } = useFetch()
 
-  const searchWeather = (name) =>
-    fetch(
-      encodeURI(
-        `http://api.waqi.info/feed/${name}/?token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`
-      )
-    )
+  const searchWeather = (name) => fetch(buildFeedUrl(name))
 
   return { searchWeather, feed: serializeFeed(data), ...state }
 }

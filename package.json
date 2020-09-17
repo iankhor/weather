@@ -19,6 +19,9 @@
   "eslintConfig": {
     "extends": "react-app"
   },
+  "resolutions": {
+    "jest-environment-jsdom": "^26.0.1"
+  },
   "browserslist": {
     "production": [
       ">0.2%",
