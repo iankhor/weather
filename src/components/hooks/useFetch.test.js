@@ -10,38 +10,38 @@ beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
+function setupMock(url = 'http://www.foobar.com', data = {}, status = '200') {
+  server.use(
+    rest.get(url, (_req, res, ctx) => {
+      return res(ctx.status(status), ctx.json(data))
+    })
+  )
+
+  return renderHook(() => useFetch())
+}
+
 describe('useFetch hook', () => {
-  function subject(url = 'http://www.foobar.com', data = {}, status = '200') {
-    server.use(
-      rest.get(url, (_req, res, ctx) => {
-        return res(ctx.status(status), ctx.json(data))
-      })
-    )
-
-    return renderHook(() => useFetch())
-  }
-
   describe('initial states', () => {
     it('sets success as null', () => {
-      const { result } = subject()
+      const { result } = setupMock()
 
       expect(result.current.success).toBeNull()
     })
 
     it('sets data as null', () => {
-      const { result } = subject()
+      const { result } = setupMock()
 
       expect(result.current.data).toBeNull()
     })
 
     it('sets loading as false', () => {
-      const { result } = subject()
+      const { result } = setupMock()
 
       expect(result.current.loading).toBeFalsy()
     })
 
     it('sets error as null', () => {
-      const { result } = subject()
+      const { result } = setupMock()
 
       expect(result.current.error).toBe('')
     })
@@ -49,7 +49,7 @@ describe('useFetch hook', () => {
 
   describe('while fetching', () => {
     it('sets success as null', async () => {
-      const { result, waitForNextUpdate } = subject('http://foo.url')
+      const { result, waitForNextUpdate } = setupMock('http://foo.url')
 
       act(() => {
         result.current.fetch('http://foo.url')
@@ -59,7 +59,7 @@ describe('useFetch hook', () => {
     })
 
     it('sets data as null', async () => {
-      const { result, waitForNextUpdate } = subject('http://foo.url')
+      const { result, waitForNextUpdate } = setupMock('http://foo.url')
 
       act(() => {
         result.current.fetch('http://foo.url')
@@ -69,7 +69,7 @@ describe('useFetch hook', () => {
     })
 
     it('sets loading as true', async () => {
-      const { result, waitFor, waitForNextUpdate } = subject('http://foo.url')
+      const { result, waitFor, waitForNextUpdate } = setupMock('http://foo.url')
 
       act(() => {
         result.current.fetch('http://foo.url')
@@ -82,7 +82,7 @@ describe('useFetch hook', () => {
     })
 
     it('sets error as null', async () => {
-      const { result, waitForNextUpdate } = subject('http://foo.url')
+      const { result, waitForNextUpdate } = setupMock('http://foo.url')
 
       act(() => {
         result.current.fetch('http://foo.url')
@@ -92,13 +92,13 @@ describe('useFetch hook', () => {
     })
   })
 
-  describe('successful search', () => {
+  describe('successful fetch', () => {
     const axiosData = {
       data: { foo: 'bar' },
     }
 
-    it('sets success to true', async () => {
-      const { result, waitForNextUpdate } = subject(
+    async function subject() {
+      const { result, waitForNextUpdate } = setupMock(
         'http://foorbar.url',
         axiosData
       )
@@ -108,55 +108,37 @@ describe('useFetch hook', () => {
       })
       await waitForNextUpdate()
 
-      expect(result.current.success).toBeTruthy()
+      return result.current
+    }
+
+    it('sets success to true', async () => {
+      const { success } = await subject()
+
+      expect(success).toBeTruthy()
     })
 
     it('sets data', async () => {
-      const { result, waitForNextUpdate } = subject(
-        'http://foorbar.url',
-        axiosData
-      )
+      const { data } = await subject()
 
-      act(() => {
-        result.current.fetch('http://foorbar.url')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.data).toEqual({ foo: 'bar' })
+      expect(data).toEqual({ foo: 'bar' })
     })
 
     it('sets loading to false', async () => {
-      const { result, waitForNextUpdate } = subject(
-        'http://foorbar.url',
-        axiosData
-      )
+      const { loading } = await subject()
 
-      act(() => {
-        result.current.fetch('http://foorbar.url')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.loading).toBeFalsy()
+      expect(loading).toBeFalsy()
     })
 
     it('does not set error', async () => {
-      const { result, waitForNextUpdate } = subject(
-        'http://foorbar.url',
-        axiosData
-      )
+      const { error } = await subject()
 
-      act(() => {
-        result.current.fetch('http://foorbar.url')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.error).toBe('')
+      expect(error).toBe('')
     })
   })
 
   describe('failed fetch', () => {
-    it('sets success to false', async () => {
-      const { result, waitForNextUpdate } = subject(
+    async function subject() {
+      const { result, waitForNextUpdate } = setupMock(
         'http://foorbar.url',
         {},
         '500'
@@ -167,54 +149,31 @@ describe('useFetch hook', () => {
       })
       await waitForNextUpdate()
 
-      expect(result.current.success).toBeFalsy()
+      return result.current
+    }
+
+    it('sets success to false', async () => {
+      const { success } = await subject()
+
+      expect(success).toBeFalsy()
     })
 
     it('sets data as null', async () => {
-      const { result, waitForNextUpdate } = subject(
-        'http://foorbar.url',
-        {},
-        '500'
-      )
+      const { data } = await subject()
 
-      act(() => {
-        result.current.fetch('http://foorbar.url')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.data).toBeNull()
+      expect(data).toBeNull()
     })
 
     it('sets loading to false', async () => {
-      const { result, waitForNextUpdate } = subject(
-        'http://foorbar.url',
-        {},
-        '500'
-      )
+      const { loading } = await subject()
 
-      act(() => {
-        result.current.fetch('http://foorbar.url')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.loading).toBeFalsy()
+      expect(loading).toBeFalsy()
     })
 
     it('sets error message', async () => {
-      const { result, waitForNextUpdate } = subject(
-        'http://foorbar.url',
-        {},
-        '500'
-      )
+      const { error } = await subject()
 
-      act(() => {
-        result.current.fetch('http://foorbar.url')
-      })
-      await waitForNextUpdate()
-
-      expect(result.current.error).toBe(
-        'Something went wrong. Please try again'
-      )
+      expect(error).toBe('Something went wrong. Please try again')
     })
   })
 })

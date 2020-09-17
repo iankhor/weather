@@ -18,7 +18,5 @@ export default function useSearchStation() {
       )
     )
 
-  console.log(data)
-
   return { searchStation, stations: serializeStationList(data), ...state }
 }
