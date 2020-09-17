@@ -24,7 +24,7 @@ function buildUseSearchWeather(mocks) {
   return {
     loading: false,
     success: null,
-    data: {},
+    feed: {},
     searchWeather: jest.fn(),
     error: '',
     ...mocks,
@@ -214,7 +214,7 @@ describe('<App/>', () => {
 
           const useSearchWeatherMocks = buildUseSearchWeather({
             success: true,
-            data: weatherData,
+            feed: weatherData,
           })
           subject({ useSearchStationMocks, useSearchWeatherMocks })
 
@@ -231,7 +231,7 @@ describe('<App/>', () => {
           const weatherData = buildCityWeatherData()
           const useSearchWeatherMocks = buildUseSearchWeather({
             success: true,
-            data: weatherData,
+            feed: weatherData,
           })
           subject({ useSearchWeatherMocks })
 
@@ -245,7 +245,7 @@ describe('<App/>', () => {
 
           const useSearchWeatherMocks = buildUseSearchWeather({
             success: true,
-            data: weatherData,
+            feed: weatherData,
           })
 
           subject({ useSearchStationMocks, useSearchWeatherMocks })

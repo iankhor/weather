@@ -22,7 +22,7 @@ export default function App() {
 
   const {
     loading: searchWeatherLoading,
-    data: searchWeatherData,
+    feed: searchWeatherData,
     error: searchWeatherError,
     searchWeather,
   } = useSearchWeather()
