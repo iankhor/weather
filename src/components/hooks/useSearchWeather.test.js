@@ -95,18 +95,20 @@ describe('useSearchStation hook', () => {
 
   describe('successful search', () => {
     const feedData = {
-      aqi: 71,
-      city: {
-        name: 'Melbourne, CBD',
-        url: 'ww.url1.com',
-        geo: ['2', '3'],
-      },
-      attributions: [
-        {
-          url: 'ww.url2.com',
-          name: 'something',
+      data: {
+        aqi: 71,
+        city: {
+          name: 'Melbourne, CBD',
+          url: 'ww.url1.com',
+          geo: ['2', '3'],
         },
-      ],
+        attributions: [
+          {
+            url: 'ww.url2.com',
+            name: 'something',
+          },
+        ],
+      },
     }
 
     it('sets success to true', async () => {

@@ -44,7 +44,6 @@ export default function useSearchStation() {
       const stationNames = res.data.data.map(({ station: { name } }) => name)
       dispatch({ type: 'success', stations: stationNames })
     } catch (e) {
-      console.log(e)
       dispatch({ type: 'error' })
     }
   }

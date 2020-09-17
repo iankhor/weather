@@ -97,18 +97,20 @@ describe('useSearchStation hook', () => {
   })
 
   describe('successful search', () => {
-    const stationsData = [
-      {
-        station: {
-          name: 'Melbourne, CBD',
+    const stationsData = {
+      data: [
+        {
+          station: {
+            name: 'Melbourne, CBD',
+          },
         },
-      },
-      {
-        station: {
-          name: 'Alphington',
+        {
+          station: {
+            name: 'Alphington',
+          },
         },
-      },
-    ]
+      ],
+    }
 
     it('sets success to true', async () => {
       const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
