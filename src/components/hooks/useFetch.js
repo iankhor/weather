@@ -42,7 +42,6 @@ export default function useFetch() {
       const res = await axios.get(url)
       dispatch({ type: 'success', data: res.data.data })
     } catch (e) {
-      console.error(e)
       dispatch({ type: 'error' })
     }
   }

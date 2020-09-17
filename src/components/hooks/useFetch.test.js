@@ -1,11 +1,8 @@
 import { rest } from 'msw'
-import axios from 'axios'
-import { searchStationUrl } from './useSearchStation'
 
 import { setupServer } from 'msw/node'
 import { renderHook, act } from '@testing-library/react-hooks'
-import useSearchStation from './useSearchStation'
-import { stationsData } from 'testLib/fixtures'
+import useFetch from './useFetch'
 
 const server = setupServer()
 
@@ -13,16 +10,15 @@ beforeAll(() => server.listen())
 afterEach(() => server.resetHandlers())
 afterAll(() => server.close())
 
-describe('useSearchStation hook', () => {
-  function subject(stationName = '', data = [], status = '200') {
-    const url = searchStationUrl(stationName)
+describe('useFetch hook', () => {
+  function subject(url = 'http://www.foobar.com', data = {}, status = '200') {
     server.use(
       rest.get(url, (_req, res, ctx) => {
         return res(ctx.status(status), ctx.json(data))
       })
     )
 
-    return renderHook(() => useSearchStation())
+    return renderHook(() => useFetch())
   }
 
   describe('initial states', () => {
@@ -32,10 +28,10 @@ describe('useSearchStation hook', () => {
       expect(result.current.success).toBeNull()
     })
 
-    it('sets stations as null', () => {
+    it('sets data as null', () => {
       const { result } = subject()
 
-      expect(result.current.stations).toBeNull()
+      expect(result.current.data).toBeNull()
     })
 
     it('sets loading as false', () => {
@@ -51,32 +47,32 @@ describe('useSearchStation hook', () => {
     })
   })
 
-  describe('while searching', () => {
+  describe('while fetching', () => {
     it('sets success as null', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne')
+      const { result, waitForNextUpdate } = subject('http://foo.url')
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foo.url')
       })
       expect(result.current.success).toBeNull()
       await waitForNextUpdate()
     })
 
-    it('sets stations as null', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne')
+    it('sets data as null', async () => {
+      const { result, waitForNextUpdate } = subject('http://foo.url')
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foo.url')
       })
-      expect(result.current.stations).toBeNull()
+      expect(result.current.data).toBeNull()
       await waitForNextUpdate()
     })
 
     it('sets loading as true', async () => {
-      const { result, waitFor, waitForNextUpdate } = subject('Melbourne')
+      const { result, waitFor, waitForNextUpdate } = subject('http://foo.url')
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foo.url')
       })
 
       await waitFor(() => {
@@ -86,10 +82,10 @@ describe('useSearchStation hook', () => {
     })
 
     it('sets error as null', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne')
+      const { result, waitForNextUpdate } = subject('http://foo.url')
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foo.url')
       })
       expect(result.current.error).toBe('')
       await waitForNextUpdate()
@@ -97,49 +93,46 @@ describe('useSearchStation hook', () => {
   })
 
   describe('successful search', () => {
-    const stationsData = {
-      data: [
-        {
-          station: {
-            name: 'Melbourne, CBD',
-          },
-        },
-        {
-          station: {
-            name: 'Alphington',
-          },
-        },
-      ],
+    const axiosData = {
+      data: { foo: 'bar' },
     }
 
     it('sets success to true', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
+      const { result, waitForNextUpdate } = subject(
+        'http://foorbar.url',
+        axiosData
+      )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
       expect(result.current.success).toBeTruthy()
     })
 
-    it('sets stations', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
+    it('sets data', async () => {
+      const { result, waitForNextUpdate } = subject(
+        'http://foorbar.url',
+        axiosData
+      )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
-      expect(result.current.stations).toContain('Melbourne, CBD')
-      expect(result.current.stations).toContain('Alphington')
+      expect(result.current.data).toEqual({ foo: 'bar' })
     })
 
     it('sets loading to false', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
+      const { result, waitForNextUpdate } = subject(
+        'http://foorbar.url',
+        axiosData
+      )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
@@ -147,10 +140,13 @@ describe('useSearchStation hook', () => {
     })
 
     it('does not set error', async () => {
-      const { result, waitForNextUpdate } = subject('Melbourne', stationsData)
+      const { result, waitForNextUpdate } = subject(
+        'http://foorbar.url',
+        axiosData
+      )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
@@ -158,46 +154,46 @@ describe('useSearchStation hook', () => {
     })
   })
 
-  describe('failed search', () => {
+  describe('failed fetch', () => {
     it('sets success to false', async () => {
       const { result, waitForNextUpdate } = subject(
-        'Melbourne',
-        stationsData,
+        'http://foorbar.url',
+        {},
         '500'
       )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
       expect(result.current.success).toBeFalsy()
     })
 
-    it('sets stations as null', async () => {
+    it('sets data as null', async () => {
       const { result, waitForNextUpdate } = subject(
-        'Melbourne',
-        stationsData,
+        'http://foorbar.url',
+        {},
         '500'
       )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
-      expect(result.current.stations).toBeNull()
+      expect(result.current.data).toBeNull()
     })
 
     it('sets loading to false', async () => {
       const { result, waitForNextUpdate } = subject(
-        'Melbourne',
-        stationsData,
+        'http://foorbar.url',
+        {},
         '500'
       )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
@@ -206,13 +202,13 @@ describe('useSearchStation hook', () => {
 
     it('sets error message', async () => {
       const { result, waitForNextUpdate } = subject(
-        'Melbourne',
-        stationsData,
+        'http://foorbar.url',
+        {},
         '500'
       )
 
       act(() => {
-        result.current.searchStation('Melbourne')
+        result.current.fetch('http://foorbar.url')
       })
       await waitForNextUpdate()
 
