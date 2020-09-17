@@ -2,7 +2,7 @@ import React, { useReducer } from 'react'
 import axios from 'axios'
 
 export function searchWeatherUrl(stationName) {
-  return `http://api.waqi.info/feed/${name}/?token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`
+  return `http://api.waqi.info/feed/${stationName}/?token=8d8e978e647d2b0a8c17c04ba331c0117cd06dc8`
 }
 
 const initState = {

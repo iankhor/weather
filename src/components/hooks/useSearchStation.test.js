@@ -53,7 +53,7 @@ describe('useSearchStation hook', () => {
 
   describe('while searching', () => {
     it('sets success as null', async () => {
-      const { result, waitForNextUpdate } = subject()
+      const { result, waitForNextUpdate } = subject('Melbourne')
 
       act(() => {
         result.current.searchStation('Melbourne')
@@ -63,7 +63,7 @@ describe('useSearchStation hook', () => {
     })
 
     it('sets stations as null', async () => {
-      const { result, waitForNextUpdate } = subject()
+      const { result, waitForNextUpdate } = subject('Melbourne')
 
       act(() => {
         result.current.searchStation('Melbourne')
@@ -73,7 +73,7 @@ describe('useSearchStation hook', () => {
     })
 
     it('sets loading as true', async () => {
-      const { result, waitFor, waitForNextUpdate } = subject()
+      const { result, waitFor, waitForNextUpdate } = subject('Melbourne')
 
       act(() => {
         result.current.searchStation('Melbourne')
@@ -86,7 +86,7 @@ describe('useSearchStation hook', () => {
     })
 
     it('sets error as null', async () => {
-      const { result, waitForNextUpdate } = subject()
+      const { result, waitForNextUpdate } = subject('Melbourne')
 
       act(() => {
         result.current.searchStation('Melbourne')
