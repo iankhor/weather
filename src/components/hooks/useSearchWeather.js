@@ -34,13 +34,14 @@ function reducer(state, action) {
 }
 
 function serializeFeed(feed) {
-  const { city, aqi } = feed
+  const { city, aqi, attributions } = feed
 
   return {
     cityName: city.name,
     geoLocation: { lat: city.geo[0], lng: city.geo[1] },
     url: city.url,
     aqi: aqi,
+    attributions,
   }
 }
 

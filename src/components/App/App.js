@@ -54,7 +54,7 @@ export default function App() {
                 <input
                   className="f6 f5-l input-reset bn fl black-80 bg-white pa3 lh-solid w-100 w-75-m w-80-l br2-ns br--left-ns"
                   id="station"
-                  placeholder="Enter a station or a station name"
+                  placeholder="Enter a station name"
                   type="text"
                   value={station || ''}
                   onChange={({ target: { value } }) => setStation(value)}
@@ -105,23 +105,39 @@ export default function App() {
         <>
           <article
             aria-label="weather info"
-            className="mw5 center bg-white br3 pa pa4-ns mv3 ba b--black-10"
+            className="mw5 center bg-white br3 pa mv3 ba b--black-10"
           >
             <div className="tc">
-              <h2 className="f5 f4-m f3-l fw2 black-50 mt0 lh-copy">
-                {searchWeatherData.cityName}
-              </h2>
-              <h1 className="f1">{searchWeatherData.aqi}</h1>
+              <h1 className="f3 f1-m f-headline-l">{searchWeatherData.aqi}</h1>
+              <h2 className="f5 fw4 gray mt0">{searchWeatherData.cityName}</h2>
               <hr className="mw3 bb bw1 b--black-10" />
             </div>
 
             <dl className="lh-title pa4 mt0">
               <dt className="f6 b">Coordinates</dt>
               <dd className="ml0">{`Lat: ${searchWeatherData.geoLocation.lat}  Lat: ${searchWeatherData.geoLocation.lng}`}</dd>
-              <dt className="f6 b mt2">EPA Attributions</dt>
-              <dd className="ml0">{searchWeatherData.url}</dd>
             </dl>
           </article>
+
+          <dl className="lh-title pa4 mt0">
+            <dt className="f3 b mt2">EPA Attributions</dt>
+            <small className="f6 black-60 db mb2">
+              Click the following to find out more
+            </small>
+
+            <ul className="list">
+              {searchWeatherData.attributions?.map(({ url, name }) => (
+                <li className="dib mr1 mb2">
+                  <a
+                    href={url}
+                    className="f7 f5-ns b db pa2 link dim dark-gray ba b--black-20"
+                  >
+                    {name}
+                  </a>
+                </li>
+              ))}
+            </ul>
+          </dl>
         </>
       )}
     </>

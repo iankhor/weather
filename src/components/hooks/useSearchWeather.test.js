@@ -135,6 +135,12 @@ describe('useSearchStation hook', () => {
         geoLocation: { lat: '2', lng: '3' },
         url: 'ww.url1.com',
         aqi: 71,
+        attributions: [
+          {
+            url: 'ww.url2.com',
+            name: 'something',
+          },
+        ],
       })
     })
 

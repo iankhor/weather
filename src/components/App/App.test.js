@@ -226,7 +226,6 @@ describe('<App/>', () => {
           expect(within(weatherInfo).getByText(/99/)).toBeInTheDocument()
           expect(within(weatherInfo).getByText(/88/)).toBeInTheDocument()
           expect(within(weatherInfo).getByText(/123/)).toBeInTheDocument()
-          expect(within(weatherInfo).getByText('www.url')).toBeInTheDocument()
         })
 
         it('does not show loader', () => {
