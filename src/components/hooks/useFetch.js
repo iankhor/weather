@@ -15,7 +15,7 @@ function reducer(state, action) {
     case 'success':
       return {
         ...state,
-        stations: action.stations,
+        data: action.data,
         loading: false,
         success: true,
       }
@@ -32,16 +32,17 @@ function reducer(state, action) {
   }
 }
 
-export default function useFetch({ serializer }) {
+export default function useFetch() {
   const [state, dispatch] = useReducer(reducer, initState)
 
-  const fetch = async (url) => {
+  const fetch = async (url, serializeData) => {
     dispatch({ type: 'loading' })
 
     try {
       const res = await axios.get(url)
-      dispatch({ type: 'success', data: serializer(res.data) })
+      dispatch({ type: 'success', data: serializeData(res.data.data) })
     } catch (e) {
+      console.log(e)
       dispatch({ type: 'error' })
     }
   }
