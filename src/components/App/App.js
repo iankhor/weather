@@ -115,7 +115,7 @@ export default function App() {
 
             <dl className="lh-title pa4 mt0">
               <dt className="f6 b">Coordinates</dt>
-              <dd className="ml0">{`Lat: ${searchWeatherData.geoLocation.lat}  Lat: ${searchWeatherData.geoLocation.lng}`}</dd>
+              <dd className="ml0">{`${searchWeatherData.geoLocation.lat}, ${searchWeatherData.geoLocation.lng}`}</dd>
             </dl>
           </article>
 
