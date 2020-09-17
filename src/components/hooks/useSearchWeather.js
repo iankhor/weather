@@ -1,4 +1,4 @@
-import React, { useReducer } from 'react'
+import { useReducer } from 'react'
 import axios from 'axios'
 
 export function searchWeatherUrl(stationName) {
@@ -30,6 +30,9 @@ function reducer(state, action) {
         loading: false,
         success: false,
       }
+
+    default:
+      return state
   }
 }
 
