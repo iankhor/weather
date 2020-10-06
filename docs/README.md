@@ -2,7 +2,7 @@
 
 ## Introduction
 
-Thanks for taking a look at the Drawboard exercise, we appreciate you taking the time to give this a bash - hopefully you will find it fun to complete.
+Thanks for taking a look at the Dxxxboxxxx exercise, we appreciate you taking the time to give this a bash - hopefully you will find it fun to complete.
 
 This repository contains a simple sample app using an Air Quality API to fetch and return data about air quality in a given location. You can find details of this endpoint here: http://aqicn.org/json-api/doc/
 
@@ -43,11 +43,6 @@ We will supply this task by giving you a zip file of the code in its initial sta
 
 When you are finished you can send your submission back to us as a zip file that includes any changes you’ve made and any other information you think is useful.
 
-## Feedback
-
-We’re always trying to improve our hiring process. This task is designed for you to be able to show your JS/React development skills without spending a huge amount of time on it. We welcome any feedback on how this could be improved.
-
-If you have any questions or need clarification, please email GC at ghjuvan-carlu@drawboard.com
 
 # This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
 
